@@ -79,6 +79,7 @@
         <framework src="CoreVideo.framework" weak="false" />
         <framework src="CoreGraphics.framework" weak="false" />
         <framework src="QuartzCore.framework" weak="false" />
+        <framework src="CoreText.framework" weak="true" />
                
         <header-file src="src/ios/CDVMWBarcodeScanner.h" target-dir="MWBarcodeScanner"/>
         <source-file src="src/ios/CDVMWBarcodeScanner.m" target-dir="MWBarcodeScanner"/>

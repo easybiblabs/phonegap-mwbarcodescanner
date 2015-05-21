@@ -15,18 +15,6 @@
 + (void) removeFromPreviewLayer;
 + (void) updateOverlay;
 
-//customization of overlay
-+ (void) setViewportVisible: (BOOL) value;
-+ (void) setBlinkingLineVisible: (BOOL) value;
-+ (void) setViewportLineWidth: (float) value;
-+ (void) setBlinkingLineWidth: (float) value;
-+ (void) setViewportAlpha: (float) value;
-+ (void) setViewportLineAlpha: (float) value;
-+ (void) setBlinkingLineAlpha: (float) value;
-+ (void) setBlinkingSpeed: (float) value;
-+ (void) setViewportLineRGBColor: (int) value;
-+ (void) setBlinkingLineRGBColor: (int) value;
-+ (void) setViewportLineUIColor: (UIColor*) value;
-+ (void) setBlinkingLineUIColor: (UIColor*) value;
+@property (nonatomic, retain) AVCaptureVideoPreviewLayer * previewLayer;
 
 @end
