@@ -6,15 +6,17 @@
 //  Copyright (c) 2013 Manatee Works. All rights reserved.
 //
 
+#import "MWScannerViewController.h"
 #import <UIKit/UIKit.h>
 #import <AVFoundation/AVFoundation.h>
 
-@interface MWOverlay : NSObject 
+@interface MWOverlay : NSObject
 
-+ (void) addToPreviewLayer:(AVCaptureVideoPreviewLayer *) videoPreviewLayer;
++ (void) addToPreviewLayer:(AVCaptureVideoPreviewLayer *) videoPreviewLayer viewController:(MWScannerViewController *) passedViewController;
 + (void) removeFromPreviewLayer;
 + (void) updateOverlay;
 
 @property (nonatomic, retain) AVCaptureVideoPreviewLayer * previewLayer;
+@property (nonatomic, retain) MWScannerViewController * viewController;
 
 @end

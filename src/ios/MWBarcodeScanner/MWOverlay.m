@@ -18,6 +18,7 @@
 
 CALayer *viewportLayer;
 AVCaptureVideoPreviewLayer * previewLayer;
+MWScannerViewController * viewController;
 BOOL isAttached = NO;
 
 MWOverlay *instance = nil;
@@ -44,14 +45,14 @@ MWOverlay *instance = nil;
 + (void)loadAllCustomFonts
 {
   NSError *err;
-  
+
   NSURL* fontPath = [[NSBundle mainBundle] URLForResource:@"www/fonts/OpenSans-Regular" withExtension:@"ttf"];
   if ([fontPath checkResourceIsReachableAndReturnError:&err] == YES) {
     [self loadCustomFont:fontPath];
   } else {
     NSLog(@"Open Sans Regular not found");
   }
-  
+
   fontPath = [[NSBundle mainBundle] URLForResource:@"www/fonts/OpenSans-Bold" withExtension:@"ttf"];
   if ([fontPath checkResourceIsReachableAndReturnError:&err] == YES) {
     [self loadCustomFont:fontPath];
@@ -95,11 +96,11 @@ MWOverlay *instance = nil;
   viewFinder.text = label;
   [viewFinder sizeToFit];
   viewFinder.frame = [self viewFinderFrame:viewFinder.frame.size.width viewfinderHeight: viewFinder.frame.size.height];
-  
+
   NSMutableParagraphStyle *style = [[NSParagraphStyle defaultParagraphStyle] mutableCopy];
   [style setAlignment:NSTextAlignmentCenter];
   [style setLineBreakMode:NSLineBreakByWordWrapping];
-  
+
   NSDictionary* attributes = @{
       NSFontAttributeName : font,
       NSParagraphStyleAttributeName : style,
@@ -110,16 +111,12 @@ MWOverlay *instance = nil;
 
 +(void)drawHelpLabel{
   UIFont *font = [UIFont fontWithName:@"OpenSans" size:24.0];
-  
+
   UILabel *helpLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, previewLayer.frame.size.width, previewLayer.frame.size.height)];
   helpLabel.font = font;
   helpLabel.textAlignment = NSTextAlignmentCenter;
 
-  NSString *label = @"Scan your book's barcode\nto create a citation";
-  NSString * language = [[NSLocale preferredLanguages] objectAtIndex:0];
-  if ([language isEqualToString:@"de"]) {
-    label = @"Scan den Barcode eines Buchs um es als Quelle zu verwenden";
-  }
+  NSString * label = [viewController.customParams objectForKey:@"PROMPT"];
 
   CGSize labelSize = [label sizeWithAttributes:@{NSFontAttributeName:helpLabel.font}];
 
@@ -136,7 +133,7 @@ MWOverlay *instance = nil;
   CGSize expectedSize = [gettingSizeLabel sizeThatFits:maximumLabelSize];
 
   helpLabel.frame = CGRectMake(0, previewLayer.frame.size.height - expectedSize.height - 20, previewLayer.frame.size.width, expectedSize.height);
-  
+
   NSMutableParagraphStyle *style = [[NSParagraphStyle defaultParagraphStyle] mutableCopy];
   [style setAlignment:NSTextAlignmentCenter];
   [style setLineBreakMode:NSLineBreakByWordWrapping];
@@ -165,57 +162,58 @@ MWOverlay *instance = nil;
 }
 
 
-+ (void) addToPreviewLayer:(AVCaptureVideoPreviewLayer *) videoPreviewLayer
++ (void) addToPreviewLayer:(AVCaptureVideoPreviewLayer *) videoPreviewLayer viewController:(MWScannerViewController *) passedViewController
 {
     [self loadAllCustomFonts];
-    
+
     viewportLayer = [[CALayer alloc] init];
     viewportLayer.frame = CGRectMake(0, 0, videoPreviewLayer.frame.size.width, videoPreviewLayer.frame.size.height);
-    
+
     [videoPreviewLayer addSublayer:viewportLayer];
 
     isAttached = YES;
-    
+
     previewLayer = videoPreviewLayer;
-    
+    viewController = passedViewController;
+
     instance = [[MWOverlay alloc] init];
     [MWOverlay updateOverlay];
 }
 
 + (void) removeFromPreviewLayer {
-    
+
     if (!isAttached){
         return;
     }
-    
+
     if (previewLayer){
         if (viewportLayer){
             [viewportLayer removeFromSuperlayer];
         }
     }
-    
+
     isAttached = NO;
-    
+
 }
 
 + (void) updateOverlay{
     if (!isAttached || !previewLayer){
         return;
     }
-    
+
     CGRect cgRect = viewportLayer.frame;
     UIGraphicsBeginImageContext(cgRect.size);
     CGContextRef context = UIGraphicsGetCurrentContext();
     UIGraphicsPushContext(context);
-    
+
     [self drawViewfinder];
-    
+
     [self drawHelpLabel];
 
     UIGraphicsPopContext();
-    
+
     viewportLayer.contents = (id)[UIGraphicsGetImageFromCurrentImageContext() CGImage];
-    
+
     UIGraphicsEndImageContext();
 }
 
