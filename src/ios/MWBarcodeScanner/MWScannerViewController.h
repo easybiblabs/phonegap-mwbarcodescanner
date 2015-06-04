@@ -45,16 +45,16 @@ typedef enum eMainScreenState {
 
 
 @interface MWScannerViewController : UIViewController<AVCaptureVideoDataOutputSampleBufferDelegate,UINavigationControllerDelegate, UIAlertViewDelegate>{
-    
+
     IBOutlet UIImageView *cameraOverlay;
     IBOutlet UIButton *closeButton;
     IBOutlet UIButton *flashButton;
     IBOutlet UIButton *zoomButton;
-    
+
     float firstZoom;
     float secondZoom;
     BOOL videoZoomSupported;
-    
+
 }
 
 
